@@ -44,11 +44,11 @@ class MountPoint:
         return __name == other.name
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__name
 
     @property
-    def total_size(self):
+    def total_size(self) -> int:
         return self.__total_size
 
 
@@ -73,7 +73,7 @@ class Workload:
         elif not self.__credentials.password:
             raise Exception("Password can't be empty")
 
-        return bool(random())
+        return True
 
     def authorize(self):
         return self.__credentials.username == "admin" and self.__credentials.password == "admin"
@@ -83,6 +83,9 @@ class MigrationTarget:
     """ Migration target """
 
     def __init__(self, cloud_type: CloudType):
+        if not cloud_type in CloudType.__members__:
+            raise Exception("Selected cloud type is not supported")
+
         self.cloud_type = cloud_type
         self.target_vm = None
         self.__cloud_credentials = Credentials()
@@ -109,6 +112,11 @@ class Migration:
         self.source = source
         self.target = target
         self.__state = MigrationState.not_started
+
+    def check_parameters(self) -> bool:
+        if len(self.mount_points) == 0:
+            return False
+        return true
 
     @property
     def state(self) -> str:
